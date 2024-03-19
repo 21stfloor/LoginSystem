@@ -56,7 +56,7 @@ router.delete('/:id', getUser, async (req, res) => {
     }
 });
 
-router.get('/isUserExist/', isUserExist, async (req, res) => {
+router.get('/isUserExist', isUserExist, async (req, res) => {
     if (res.userExists) {
         res.status(200).json({ message: 'User exists' });
     } else {
