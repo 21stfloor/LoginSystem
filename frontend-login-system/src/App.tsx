@@ -1,5 +1,5 @@
 import { BrowserRouter as Router } from "react-router-dom"
-import { Login } from "./pages/auth/Login"
+import { Register } from "./pages/auth/Register"
 
 function App() {
 
@@ -7,7 +7,7 @@ function App() {
     <>
       <div className="flex items-center justify-center h-screen">
         <Router>
-          <Login />
+          <Register />
         </Router>
       </div>
     </>

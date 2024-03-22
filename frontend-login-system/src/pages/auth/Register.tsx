@@ -1,7 +1,15 @@
-
 import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { PasswordInput } from "@/components/auth/PasswordInput"
+import { DatePicker } from "@/components/calendar/DatePicker"
 import {
   Select,
   SelectContent,
@@ -9,32 +17,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { DatePicker } from "@/components/calendar/DatePicker"
-import { PasswordInput } from "@/components/auth/PasswordInput"
-import React, { useState } from "react"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { useState } from "react"
+import Image from '../../assets/3DAuth.png'
 
-
-interface RegisterProps {
-  onClose: () => void;
-}
-
-export const Register: React.FC<RegisterProps> = ({ onClose }) => {
+export function Register() {
   const [password, setPassword] = useState("")
   const [passwordConfirmation, setPasswordConfirmation] = useState("")
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="outline">Register</Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Register</AlertDialogTitle>
-          <AlertDialogDescription>Create an account to get started</AlertDialogDescription>
-        </AlertDialogHeader>
-        <form>
-        <div className="grid w-full items-center gap-4">
+    <div className="flex justify-center items-center space-x-0 sm:space-x-20 h-screen sm:h-auto">
+      <img src={Image} alt="3DAuth" className="hidden sm:block w-full md:w-1/2 lg:w-1/3 xl:w-1/4"/>
+      <Card className="w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-[500px] mx-auto">
+        <CardHeader>
+          <CardTitle>Register</CardTitle>
+          <CardDescription>Create an account to get started</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <div className="grid w-full items-center gap-4">
               <div className="flex flex-row space-x-4">
                 <div className="flex flex-col space-y-1.5 w-full">
                   <Label htmlFor="firstName">First Name</Label>
@@ -83,14 +83,11 @@ export const Register: React.FC<RegisterProps> = ({ onClose }) => {
                   autoComplete="password"
                 />
               </div>
+              <Button type="submit">Create an account</Button>
             </div>
-            <br />
-        </form>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Create an account</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
