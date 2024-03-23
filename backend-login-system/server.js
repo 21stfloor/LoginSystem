@@ -1,23 +1,24 @@
-// const envVariables = require('./config');
-require('dotenv').config();
+import express from 'express';
+import mongoose from 'mongoose';
+import json from 'express';
+import dotenv from 'dotenv';
 
-const express = require('express');
+dotenv.config();
+
 const app = express();
-const mongoose = require('mongoose');
-
 const port = process.env.PORT || 3000;
-const mongoURI = process.env.NODE_ENV === 'production' ? process.env.MONGODB_URI_PROD : process.env.MONGODB_URI_DEV;
+const mongoURI =
+  process.env.NODE_ENV === 'production'
+    ? process.env.MONGODB_URI_PROD
+    : process.env.MONGODB_URI_DEV;
 
-mongoose.connect(mongoURI)
+mongoose.connect(mongoURI, { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));
 db.once('open', () => console.log('Connected to Database'));
 
-app.use(express.json());
+app.use(json());
 
-const usersRouter = require('./routes/users');
-app.use('/users', usersRouter);
-
-app.listen(port, () => {
-  console.log('Server Started');
+app.listen(port, async () =>  {
+  console.log(`Server Started at port: ${port}`);
 });
