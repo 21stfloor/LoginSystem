@@ -1,4 +1,5 @@
 import User from '../models/user.js';
+import commonPasswords from 'common-password-checker';
 
 async function doesUserExist(email) {
     try {
@@ -8,4 +9,11 @@ async function doesUserExist(email) {
         res.status(500).json({ message: err.message });
     }
 }
-export default doesUserExist;
+
+async function isCommonPassword(password) {
+    if (await commonPasswords(password)) {
+        return res.status(400).json({ message: 'Password is too common' });
+    }
+}
+
+export {doesUserExist, isCommonPassword};
