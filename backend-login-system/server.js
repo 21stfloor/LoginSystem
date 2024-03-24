@@ -19,6 +19,12 @@ db.once('open', () => console.log('Connected to Database'));
 
 app.use(json());
 
+import { isCommonPassword } from './routes/users.js';
+
 app.listen(port, async () =>  {
   console.log(`Server Started at port: ${port}`);
+  console.log(await isCommonPassword('password'));
+  console.log(await isCommonPassword('password123'));
+  console.log(await isCommonPassword('password123!'));
+  console.log(await isCommonPassword('password123!@#'));
 });
