@@ -12,7 +12,7 @@ const mongoURI =
     ? process.env.MONGODB_URI_PROD
     : process.env.MONGODB_URI_DEV;
 
-mongoose.connect(mongoURI, { useNewUrlParser: true });
+mongoose.connect(mongoURI);
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));
 db.once('open', () => console.log('Connected to Database'));
