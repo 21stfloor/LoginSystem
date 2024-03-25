@@ -1,11 +1,13 @@
-import User from '../models/user.js';
+import User from '../models/userModel.js';
 
 async function doesUserExist(email) {
     try {
         const user = await User.findOne({ email });
         return user != null;
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        throw new Error(err.message);
     }
 }
-export default doesUserExist;
+
+
+export {doesUserExist};
