@@ -5,7 +5,8 @@ function isCommonPassword(password) {
 }
 
 function isPasswordValid(password) {
-  if (password.length < 8) {
+  const MINIMUM_LENGTH = 8;
+  if (password.length < MINIMUM_LENGTH) {
     return false;
   }
 
@@ -41,4 +42,4 @@ function isPasswordValid(password) {
   return true;
 }
 
-export default { isPasswordValid };
+export { isPasswordValid };
