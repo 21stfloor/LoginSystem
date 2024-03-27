@@ -14,7 +14,7 @@ function isPasswordValid(password) {
     return false;
   }
 
-  if (!/\d/.test(password)) {
+  if (!containsNumbers(password)) {
     return false;
   }
 
@@ -42,4 +42,27 @@ function isPasswordValid(password) {
   return true;
 }
 
-export { isPasswordValid };
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function containsNumbers(str) {
+  const numberRegex = /\d/;
+  return numberRegex.test(str);
+}
+
+function isFutureDate(dateString) {
+  const [year, month, day] = dateString.split('-');
+  return new Date(year, month - 1, day) > new Date();
+}
+
+function isValidGender(gender) {
+  return gender === 'Male' || gender === 'Female';
+}
+
+function isSamePassword(password, confirmPassword) {
+  return password === confirmPassword;
+}
+
+export { isPasswordValid, isValidEmail, containsNumbers, isFutureDate, isValidGender, isSamePassword };
