@@ -1,4 +1,6 @@
 import commonPasswords from 'common-password-checker';//TODO: Look for more updated third-party dependency for future support
+import crypto from "crypto";
+
 
 function isCommonPassword(password) {
   return commonPasswords(password);
@@ -42,4 +44,8 @@ function isPasswordValid(password) {
   return true;
 }
 
-export { isPasswordValid };
+function generateVerificationToken() {
+  return crypto.randomBytes(20).toString('hex');
+}
+
+export { isPasswordValid, generateVerificationToken };
