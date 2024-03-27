@@ -3,7 +3,7 @@ import { doesUserExist } from './userController.js';
 
 function getRegistrationValidationRules(req) {    
     return [
-        { field: 'email', type: 'string', required: true, validator: isValidEmail, asyncValidator: !doesUserExist },
+        { field: 'email', type: 'string', required: true, validator: isValidEmail, asyncValidator: doesUserExist },
         { field: 'firstName', type: 'string', required: true, validator: !containsNumbers },
         { field: 'lastName', type: 'string', required: true, validator: !containsNumbers },
         { field: 'birthday', type: 'string', required: true, validator: !isFutureDate },
