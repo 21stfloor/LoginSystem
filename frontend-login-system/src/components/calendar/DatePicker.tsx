@@ -29,7 +29,7 @@ const FormSchema = z.object({
   }),
 })
 
-export function DatePicker() {
+export function DatePicker({ disabled }: { disabled?: boolean }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
@@ -52,6 +52,7 @@ export function DatePicker() {
                         "w-full pl-3 text-left font-normal",
                         !field.value && "text-muted-foreground"
                       )}
+                      disabled={disabled}
                     >
                       {field.value ? (
                         format(field.value, "PPP")
@@ -68,7 +69,7 @@ export function DatePicker() {
                     selected={field.value}
                     onSelect={field.onChange}
                     disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
+                      disabled || date > new Date() || date < new Date("1900-01-01")
                     }
                     initialFocus
                   />

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { Loader2 } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -23,6 +24,12 @@ import Image from '../../assets/3DAuth.png'
 export function Register() {
   const [password, setPassword] = useState("")
   const [passwordConfirmation, setPasswordConfirmation] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault()
+    setIsLoading(true)
+  }
 
   return (
     <div className="flex justify-center items-center space-x-0 sm:space-x-20 h-screen sm:h-auto">
@@ -33,23 +40,23 @@ export function Register() {
           <CardDescription>Create an account to get started</CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-row space-x-4">
                 <div className="flex flex-col space-y-1.5 w-full">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" placeholder="Enter your first name" required/>
+                  <Input id="firstName" placeholder="Enter your first name" required disabled={isLoading}/>
                 </div>
                 <div className="flex flex-col space-y-1.5 w-full">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" placeholder="Enter your last name" required/>
+                  <Input id="lastName" placeholder="Enter your last name" required disabled={isLoading}/>
                 </div>
               </div>
-              <DatePicker />
+              <DatePicker disabled={isLoading}/>
               <div className="flex flex-row space-x-4">
                 <div className="flex flex-col space-y-1.5 w-full">
                   <Label htmlFor="gender">Gender</Label>
-                  <Select>
+                  <Select disabled={isLoading}>
                     <SelectTrigger id="gender">
                       <SelectValue placeholder="Male" />
                     </SelectTrigger>
@@ -62,7 +69,7 @@ export function Register() {
                 </div>
                 <div className="flex flex-col space-y-1.5 w-full">
                   <Label htmlFor="email">Email</Label>
-                  <Input type="email" placeholder="Enter your email" required/>
+                  <Input type="email" placeholder="Enter your email" required disabled={isLoading}/>
                 </div>
               </div>
               <div className="flex flex-col space-y-1.5">
@@ -72,6 +79,7 @@ export function Register() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="password"
+                  disabled={isLoading}
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
@@ -81,9 +89,13 @@ export function Register() {
                   value={passwordConfirmation}
                   onChange={(e) => setPasswordConfirmation(e.target.value)}
                   autoComplete="password"
+                  disabled={isLoading}
                 />
               </div>
-              <Button type="submit">Create an account</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Create an account
+              </Button>
             </div>
           </form>
         </CardContent>
