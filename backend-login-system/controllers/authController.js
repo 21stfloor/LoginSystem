@@ -1,14 +1,15 @@
 import commonPasswords from 'common-password-checker';//TODO: Look for more updated third-party dependency for future support
 import crypto from "crypto";
 
+const MINIMUM_PASSWORD_LENGTH = 8;
+const BYTES_NUMBER = 20;
 
 function isCommonPassword(password) {
   return commonPasswords(password);
 }
 
 function isPasswordValid(password) {
-  const MINIMUM_LENGTH = 8;
-  if (password.length < MINIMUM_LENGTH) {
+  if (password.length < MINIMUM_PASSWORD_LENGTH) {
     return false;
   }
 
@@ -45,7 +46,7 @@ function isPasswordValid(password) {
 }
 
 function generateVerificationToken() {
-  return crypto.randomBytes(20).toString('hex');
+  return crypto.randomBytes(BYTES_NUMBER).toString('hex');
 }
 
 export { isPasswordValid, generateVerificationToken };
