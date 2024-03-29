@@ -1,8 +1,10 @@
 import { isPasswordValid } from './authController.js';
 import { doesUserExist } from './userController.js';
 
+const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+const numberRegex = /\d/;
+
 function isValidEmail(email) {
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   
     if (!email) {
         throw new Error('Email is required'); // Or return false with an error message
@@ -16,7 +18,6 @@ function isValidEmail(email) {
 }
 
 function doesNotContainNumbers(str) {
-    const numberRegex = /\d/;
     return !numberRegex.test(str);
 }
 
