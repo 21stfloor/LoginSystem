@@ -1,8 +1,8 @@
 import { isPasswordValid } from './authController.js';
 import { doesUserExist } from './userController.js';
 
-const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-const numberRegex = /\d/;
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+const NUMBER_REGEX = /\d/;
 
 function isValidEmail(email) {
   
@@ -10,7 +10,7 @@ function isValidEmail(email) {
         return false;
     }
   
-    if (!emailRegex.test(email)) {
+    if (!EMAIL_REGEX.test(email)) {
         return false;
     }
     
@@ -18,7 +18,7 @@ function isValidEmail(email) {
 }
 
 function doesNotContainNumbers(str) {
-    return !numberRegex.test(str);
+    return !NUMBER_REGEX.test(str);
 }
 
 function isNotFutureDate(dateString) {

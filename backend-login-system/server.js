@@ -6,22 +6,22 @@ import index from './routes/index.js';
 
 dotenv.config();
 
-const app = express();
-const port = process.env.PORT || 3000;
-const mongoURI =
+const APP = express();
+const PORT = process.env.PORT || 3000;
+const MONGO_URI =
   process.env.NODE_ENV === 'production'
     ? process.env.MONGODB_URI_PROD
     : process.env.MONGODB_URI_DEV;
 
-mongoose.connect(mongoURI);
-const db = mongoose.connection;
-db.on('error', (error) => console.error(error));
-db.once('open', () => console.log('Connected to Database'));
+mongoose.connect(MONGO_URI);
+const DB = mongoose.connection;
+DB.on('error', (error) => console.error(error));
+DB.once('open', () => console.log('Connected to Database'));
 
-app.use(json());
+APP.use(json());
 
-app.use('/', index);
+APP.use('/', index);
 
-app.listen(port, async () =>  {
-  console.log(`Server Started at port: ${port}`);
+APP.listen(PORT, async () =>  {
+  console.log(`Server Started at port: ${PORT}`);
 });
