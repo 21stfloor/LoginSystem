@@ -1,7 +1,6 @@
 import express from 'express';
-const router = express.Router();
 import { getRegistrationValidationRules } from '../controllers/validationController.js';
-
+const router = express.Router();
 router.post('/validate-registration', async (req, res) => {
     const validationRules = getRegistrationValidationRules(req);
     let hasErrors = false;

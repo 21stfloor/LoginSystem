@@ -14,7 +14,7 @@ function isPasswordValid(password) {
     return false;
   }
 
-  if (!containsNumbers(password)) {
+  if (!/\d/.test(password)) {
     return false;
   }
 
@@ -42,36 +42,4 @@ function isPasswordValid(password) {
   return true;
 }
 
-function isValidEmail(email) {
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-
-  if (!email) {
-    throw new Error('Email is required'); // Or return false with an error message
-  }
-
-  if (!emailRegex.test(email)) {
-    return false;
-  }
-  
-  return true;
-}
-
-function containsNumbers(str) {
-  const numberRegex = /\d/;
-  return numberRegex.test(str);
-}
-
-function isFutureDate(dateString) {
-  const [year, month, day] = dateString.split('-');
-  return new Date(year, month - 1, day) > new Date();
-}
-
-function isValidGender(gender) {
-  return gender === 'Male' || gender === 'Female';
-}
-
-function isSamePassword(password, confirmPassword) {
-  return password === confirmPassword;
-}
-
-export { isPasswordValid, isValidEmail, containsNumbers, isFutureDate, isValidGender, isSamePassword };
+export { isPasswordValid };
