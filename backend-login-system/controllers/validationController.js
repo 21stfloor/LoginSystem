@@ -7,7 +7,7 @@ const numberRegex = /\d/;
 function isValidEmail(email) {
   
     if (!email) {
-        throw new Error('Email is required'); // Or return false with an error message
+        return false;
     }
   
     if (!emailRegex.test(email)) {
