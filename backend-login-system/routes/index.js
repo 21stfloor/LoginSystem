@@ -1,8 +1,9 @@
 import express, { json } from 'express';
 import userRoutes from './userRoutes.js';
-const router = express.Router();
 
-router.use(json());
-router.use('/user', userRoutes); 
+const ROUTER = express.Router();
 
-export default router;
+ROUTER.use(json());
+ROUTER.use('/user', userRoutes); 
+
+export default ROUTER;
