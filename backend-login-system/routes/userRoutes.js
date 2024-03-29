@@ -1,7 +1,9 @@
 import express from 'express';
 import { getRegistrationValidationRules } from '../controllers/validationController.js';
-const router = express.Router();
-router.post('/validate-registration', async (req, res) => {
+
+const ROUTER = express.Router();
+
+ROUTER.post('/validate-registration', async (req, res) => {
     const validationRules = getRegistrationValidationRules(req);
     let hasErrors = false;
     const errors = {};
@@ -37,4 +39,4 @@ router.post('/validate-registration', async (req, res) => {
     }
 });
 
-export default router;
+export default ROUTER;
