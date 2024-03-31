@@ -1,5 +1,7 @@
 import express from 'express';
 import { getRegistrationValidationRules } from '../controllers/validationController.js';
+import { doesUserExist } from '../controllers/userController.js';
+import User from '../models/userModel.js';
 
 const ROUTER = express.Router();
 
@@ -36,6 +38,15 @@ ROUTER.post('/validate-registration', async (req, res) => {
         return res.status(400).json({ errors: errors });
     } else {
         return res.status(200).json({ message: 'Registration Validation successful' });
+    }
+});
+
+ROUTER.post('/register', async (req, res) => {
+    const USER_EXISTS = await doesUserExist(req.body.email);
+    if (USER_EXISTS) {
+        return res.status(400).json({ error: 'User already exists' });
+    } else {
+        return res.status(200).json({ message: 'Success' });
     }
 });
 
