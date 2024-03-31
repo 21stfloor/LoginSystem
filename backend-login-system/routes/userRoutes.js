@@ -42,25 +42,11 @@ ROUTER.post('/validate-registration', async (req, res) => {
 });
 
 ROUTER.post('/register', async (req, res) => {
-    const userExists = await doesUserExist(req.body.email);
-    if (userExists) {
+    const USER_EXISTS = await doesUserExist(req.body.email);
+    if (USER_EXISTS) {
         return res.status(400).json({ error: 'User already exists' });
-    }
-
-    const user = new User({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        birthday: req.body.birthday,
-        gender: req.body.gender,
-        email: req.body.email,
-        password: req.body.password
-    });
-
-    try {
-        await user.save();
-        res.status(201).json({ message: 'User created successfully'});
-    } catch (err) {
-        res.status(400).json({ error: err.message });
+    } else {
+        return res.status(200).json({ message: 'Success' });
     }
 });
 
