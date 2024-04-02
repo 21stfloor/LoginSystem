@@ -3,6 +3,10 @@ import crypto from "crypto";
 
 const MINIMUM_PASSWORD_LENGTH = 8;
 const BYTES_NUMBER = 20;
+const COMMON_SUBSTITUTIONS = ['4', '3', '1', '0', '5']; 
+const COMMON_DIGITS = ['123', '1234', '12345']; 
+const COMMON_SPECIAL_CHARACTERS = ['!', '@', '$', '&']; 
+const SPECIAL_CHARACTERS = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 
 function isCommonPassword(password) {
   return commonPasswords(password);
@@ -21,8 +25,7 @@ function isPasswordValid(password) {
     return false;
   }
 
-  const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-  if (!specialCharacters.test(password)) {
+  if (!SPECIAL_CHARACTERS.test(password)) {
     return false;
   }
 
@@ -30,14 +33,10 @@ function isPasswordValid(password) {
     return false;
   }
 
-  const commonSubstitutions = ['4', '3', '1', '0', '5']; 
-  const commonDigits = ['123', '1234', '12345']; 
-  const commonSpecialCharacters = ['!', '@', '$', '&']; 
-
   if (
-    commonSubstitutions.some(substitution => password.includes(substitution)) ||
-    commonDigits.some(digit => password.includes(digit)) ||
-    commonSpecialCharacters.some(char => password.includes(char))
+    COMMON_SUBSTITUTIONS.some(substitution => password.includes(substitution)) ||
+    COMMON_DIGITS.some(digit => password.includes(digit)) ||
+    COMMON_SPECIAL_CHARACTERS.some(char => password.includes(char))
   ) {
     return false;
   }
