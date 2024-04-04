@@ -29,7 +29,11 @@ const FormSchema = z.object({
   }),
 })
 
-export function DatePicker() {
+interface DatePickerProps {
+  disabled?: boolean;
+}
+
+export function DatePicker({ disabled }: DatePickerProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
@@ -52,6 +56,7 @@ export function DatePicker() {
                       "w-full pl-3 justify-start text-left font-normal",
                       !field.value && "text-muted-foreground"
                     )}
+                    disabled={disabled}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {field.value ? (
