@@ -4,8 +4,8 @@ import { generateVerificationToken, doesTokenExist } from '../controllers/authCo
 const ROUTER = express.Router();
 
 ROUTER.post('/create-token', async (req, res) => {
-    const email = req.body.email;
-    const TOKEN_EXISTS = await doesTokenExist(email);
+    const EMAIL = req.body.email;
+    const TOKEN_EXISTS = await doesTokenExist(EMAIL);
     if (TOKEN_EXISTS) {
         return res.status(400).json({ error: 'Token already exists' });
     } else {

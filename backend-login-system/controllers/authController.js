@@ -57,8 +57,8 @@ function hashPassword(rawPassword){
 
 async function doesTokenExist(email) {
   try {
-      const token = await VerificationTokens.findOne({ email });
-      return token != null;
+      const TOKEN = await VerificationTokens.findOne({ email });
+      return TOKEN != null;
   } catch (err) {
       throw new Error(err.message);
   }

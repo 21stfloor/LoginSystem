@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema, model } = mongoose;
 
-const verificationTokenSchema = new Schema({
+const VERIFICATION_TOKEN_SCHEMA = new Schema({
     _id: {
         type: String,
         required: true
@@ -13,4 +13,4 @@ const verificationTokenSchema = new Schema({
     }
 });
 
-export default model('VerificationTokens', verificationTokenSchema, 'VerificationTokens');
+export default model('VerificationTokens', VERIFICATION_TOKEN_SCHEMA, 'VerificationTokens');
