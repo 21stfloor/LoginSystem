@@ -46,6 +46,8 @@ ROUTER.post('/register', async (req, res) => {
     if (USER_EXISTS) {
         return res.status(400).json({ error: 'User already exists' });
     } else {
+        const newUser = new User(req.body);
+        await newUser.save();
         return res.status(200).json({ message: 'Success' });
     }
 });
