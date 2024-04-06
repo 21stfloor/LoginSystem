@@ -31,6 +31,8 @@ const FormSchema = z.object({
 
 interface DatePickerProps {
   disabled?: boolean;
+  selected?: Date; 
+  onChange?: (date: Date) => void; 
 }
 
 export function DatePicker({ disabled }: DatePickerProps) {

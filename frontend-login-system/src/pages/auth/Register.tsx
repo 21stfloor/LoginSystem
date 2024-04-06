@@ -20,16 +20,124 @@ import {
 } from "@/components/ui/select"
 import { useState } from "react"
 import Image from '../../assets/3DAuth.png'
+import axios from 'axios'
+import classNames from 'classnames'
+import { useToast } from "@/components/ui/use-toast"
+import { ToastAction } from "@/components/ui/toast"
 
 export function Register() {
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [birthday, setBirthday] = useState(new Date())
+  const [gender, setGender] = useState("")
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [passwordConfirmation, setPasswordConfirmation] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState({
+    firstName: "",  
+    lastName: "",
+    birthday: "",
+    gender: "",
+    email: "",
+    password: "",
+    passwordConfirmation: "",
+  });
+  
+  const { toast } = useToast()
+
+  const validateFields = async () => {
+    let passwordError = "";
+    if (!password) {
+    passwordError = "This field is required";
+    } else if (password.length < 8) {
+      passwordError = "Password must be at least 8 characters long";
+    } else if (password !== passwordConfirmation) {
+      passwordError = "Passwords do not match";
+    }
+    const newErrors = {
+      firstName: firstName ? "" : "This field is required",
+      lastName: lastName ? "" : "This field is required",
+      birthday: birthday ? "" : "This field is required",
+      gender: gender ? "" : "This field is required",
+      email: email ? "" : "This field is required",
+      password: passwordError,
+      passwordConfirmation: passwordConfirmation ? "" : "This field is required",
+    };
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some((error) => error !== "")) {
+      if (passwordError) {
+        console.log(passwordError)
+      }
+      return false;
+    }
+    return true;
+  }
+
+  const registerUser = async () => {
+    const isValid = await validateFields();
+
+    if (!isValid) {
+      return;
+    }
+
+    try {
+      const birthdayString = birthday.toISOString().slice(0, 10);
+      const validateResponse = await axios.post("http://localhost:3000/user/validate-registration", {
+        firstName,
+        lastName,
+        birthday: birthdayString,
+        gender,
+        email,
+        password,
+        confirmPassword: passwordConfirmation,
+      });
+
+      if (validateResponse.status === 200) {
+        console.log('Registration validation successful')
+
+        const registerResponse = await axios.post("http://localhost:3000/user/register", {
+          firstName,
+          lastName,
+          birthday: birthdayString,
+          gender,
+          email,
+          password,
+        });
+
+        console.log('User registered successfully', registerResponse.data)
+        toast({
+          title:"Success!",
+          description:"Your Account has been successfully created!",
+        })
+      } else {
+        throw new Error("Registration validation failed");
+      }
+    } catch (error) {
+      console.error("Failed to register user", error)
+      if (error.response && error.response.status === 400) {
+        console.log("Bad request: ", error.response.data);
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: `${error.response.data.errors.password}`,
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        })
+      } else {
+        console.log("Error registering user: ", error);
+      }
+    }
+  }
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault()
     setIsLoading(true)
+    await registerUser()
+    setIsLoading(false)
   }
+
+
 
   return (
     <div className="flex justify-center items-center space-x-0 sm:space-x-20 h-screen sm:h-auto">
@@ -45,31 +153,71 @@ export function Register() {
               <div className="flex flex-row space-x-4">
                 <div className="flex flex-col space-y-1.5 w-full">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" placeholder="Enter your first name" required disabled={isLoading}/>
+                  <Input 
+                    id="firstName"
+                    placeholder="Enter your first name"
+                    disabled={isLoading}
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className={classNames({ 'border-red-500': errors.firstName })}
+                  />
+                  {errors.firstName && (
+                    <span className="text-red-500 text-sm">{errors.firstName}</span>
+                  )}
                 </div>
                 <div className="flex flex-col space-y-1.5 w-full">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" placeholder="Enter your last name" required disabled={isLoading}/>
+                  <Input
+                    id="lastName" 
+                    placeholder="Enter your last name"
+                    disabled={isLoading}
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className={classNames({ 'border-red-500': errors.lastName })}
+                  />
+                  {errors.lastName && (
+                    <span className="text-red-500 text-sm">{errors.lastName}</span>
+                  )}
                 </div>
               </div>
-              <DatePicker disabled={isLoading}/>
+              <DatePicker 
+                disabled={isLoading}
+                selected={birthday}
+                onChange={(date: Date) => setBirthday(date)}
+              />
               <div className="flex flex-row space-x-4">
                 <div className="flex flex-col space-y-1.5 w-full">
                   <Label htmlFor="gender">Gender</Label>
-                  <Select disabled={isLoading}>
+                  <Select 
+                    disabled={isLoading} 
+                    onValueChange={(value) => setGender(value)}
+                  >
                     <SelectTrigger id="gender">
                       <SelectValue placeholder="Male" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="female">Female</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="Male">Male</SelectItem>
+                      <SelectItem value="Female">Female</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.gender && (
+                    <span className="text-red-500 text-sm">{errors.gender}</span>
+                  )}
                 </div>
                 <div className="flex flex-col space-y-1.5 w-full">
                   <Label htmlFor="email">Email</Label>
-                  <Input type="email" placeholder="Enter your email" required disabled={isLoading}/>
+                  <Input 
+                    type="email"  
+                    placeholder="Enter your email"
+                    disabled={isLoading}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={classNames({ 'border-red-500': errors.email })}
+                  />
+                  {errors.email && (
+                    <span className="text-red-500 text-sm">{errors.email}</span>
+                  )}
                 </div>
               </div>
               <div className="flex flex-col space-y-1.5">
@@ -80,7 +228,11 @@ export function Register() {
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="password"
                   disabled={isLoading}
+                  className={classNames({ 'border-red-500': errors.password })}
                 />
+                {errors.password && (
+                  <span className="text-red-500 text-sm">{errors.password}</span>
+                )}
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="passwordConfirmation">Confirm Password</Label>
@@ -90,9 +242,18 @@ export function Register() {
                   onChange={(e) => setPasswordConfirmation(e.target.value)}
                   autoComplete="password"
                   disabled={isLoading}
+                  className={classNames({ 'border-red-500': errors.passwordConfirmation })}
                 />
+                {errors.passwordConfirmation && (
+                  <span className="text-red-500 text-sm">
+                    {errors.passwordConfirmation}
+                  </span>
+                )}
               </div>
-              <Button type="submit" disabled={isLoading}>
+              <Button 
+                type="submit" 
+                disabled={isLoading}
+              >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Create an account
               </Button>
