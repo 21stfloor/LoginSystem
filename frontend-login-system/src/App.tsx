@@ -1,6 +1,7 @@
 import { BrowserRouter as Router } from "react-router-dom"
 import { Register } from "./pages/auth/Register"
-import { Toaster } from "./components/ui/toaster"
+import { Slide, ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
 
@@ -11,7 +12,20 @@ function App() {
           <Register />
         </Router>
       </div>
-      <Toaster />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        limit={2}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Slide}
+      />
     </>
   )
 }

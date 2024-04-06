@@ -22,8 +22,13 @@ import { useState } from "react"
 import Image from '../../assets/3DAuth.png'
 import axios from 'axios'
 import classNames from 'classnames'
-import { useToast } from "@/components/ui/use-toast"
-import { ToastAction } from "@/components/ui/toast"
+import { toast } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css";
+import { AxiosError } from "axios"
+
+function isAxiosError(error: unknown): error is AxiosError {
+  return (error as AxiosError).isAxiosError !== undefined;
+}
 
 export function Register() {
   const [firstName, setFirstName] = useState("")
@@ -44,7 +49,7 @@ export function Register() {
     passwordConfirmation: "",
   });
   
-  const { toast } = useToast()
+  
 
   const validateFields = async () => {
     let passwordError = "";
@@ -67,9 +72,6 @@ export function Register() {
     setErrors(newErrors);
 
     if (Object.values(newErrors).some((error) => error !== "")) {
-      if (passwordError) {
-        console.log(passwordError)
-      }
       return false;
     }
     return true;
@@ -84,7 +86,7 @@ export function Register() {
 
     try {
       const birthdayString = birthday.toISOString().slice(0, 10);
-      const validateResponse = await axios.post("http://localhost:3000/user/validate-registration", {
+      const validateResponse = await axios.post("/api/user/validate-registration", {
         firstName,
         lastName,
         birthday: birthdayString,
@@ -95,9 +97,8 @@ export function Register() {
       });
 
       if (validateResponse.status === 200) {
-        console.log('Registration validation successful')
 
-        const registerResponse = await axios.post("http://localhost:3000/user/register", {
+        const registerResponse = await axios.post("/api/user/register", {
           firstName,
           lastName,
           birthday: birthdayString,
@@ -107,25 +108,18 @@ export function Register() {
         });
 
         console.log('User registered successfully', registerResponse.data)
-        toast({
-          title:"Success!",
-          description:"Your Account has been successfully created!",
-        })
+        toast.success("User registered successfully")
       } else {
         throw new Error("Registration validation failed");
       }
-    } catch (error) {
-      console.error("Failed to register user", error)
-      if (error.response && error.response.status === 400) {
-        console.log("Bad request: ", error.response.data);
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: `${error.response.data.errors.password}`,
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        })
-      } else {
-        console.log("Error registering user: ", error);
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        if (error.response && error.response.status === 400) {
+          const responseData = error.response.data as { errors: { password: string } };
+          if (responseData && responseData.errors && responseData.errors.password) {
+            toast.error(responseData.errors.password);
+          } 
+        }
       }
     }
   }
