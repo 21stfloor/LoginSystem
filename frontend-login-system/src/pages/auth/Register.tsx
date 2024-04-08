@@ -110,10 +110,8 @@ export function Register() {
         password,
         confirmPassword: passwordConfirmation,
       });
-      console.log('Registration validation successful', validateResponse.data)
       if (validateResponse.status === 200) {
-
-        const registerResponse = await axios.post("/api/user/register", {
+        await axios.post("/api/user/register", {
           firstName,
           lastName,
           birthday: birthdayString,
@@ -121,8 +119,6 @@ export function Register() {
           email,
           password,
         });
-
-        console.log('User registered successfully', registerResponse.data)
         toast.success("User registered successfully")
       } else {
         throw new Error("Registration validation failed");
