@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { getRegistrationValidationRules } from '../controllers/validationController.js';
 import { doesUserExist } from '../controllers/userController.js';
 import User from '../models/userModel.js';
+import { hashPassword} from "../controllers/authController.js";
 
 const ROUTER = express.Router();
 
@@ -50,20 +51,24 @@ ROUTER.post('/register', async (req, res) => {
         const USER_EXISTS = await doesUserExist(req.body.email);
         if (USER_EXISTS) {
             await session.abortTransaction();
-            session.endSession();
+            await session.endSession();
             return res.status(400).json({ error: 'User already exists' });
         } else {
-            const newUser = new User(req.body);
+            const hashedPassword = await hashPassword(req.body.password);
+            const newUser = new User({
+                ...req.body,
+                password: hashedPassword
+            });
             await newUser.save({ session });
             await session.commitTransaction();
-            session.endSession();
+            await session.endSession();
             return res.status(200).json({ message: 'Success' });
         }
     } catch (error) {
         console.error('Error in transaction', error);
         await session.abortTransaction();
-        session.endSession();
-        return res.status(500).json({ error: 'Internal server error' });
+        await session.endSession();
+        return res.status(500).json({ error: error.message });
     }
 });
 
