@@ -34,7 +34,7 @@ export function Register() {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [birthday, setBirthday] = useState(new Date())
-  const [gender, setGender] = useState("")
+  const [gender, setGender] = useState("Male")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [passwordConfirmation, setPasswordConfirmation] = useState("")
@@ -60,21 +60,36 @@ export function Register() {
     } else if (password !== passwordConfirmation) {
       passwordError = "Passwords do not match";
     }
+
+    const nameRegex = /^[A-Za-z]+$/;
+    let firstNameError = "";
+    let lastNameError = "";
+
+    if (!firstName) {
+      firstNameError = "This field is required";
+    } else if (!firstName.match(nameRegex)) {
+      firstNameError = "First name can only contain letters";
+    }
+
+    if (!lastName) {
+      lastNameError = "This field is required";
+    } else if (!lastName.match(nameRegex)) {
+      lastNameError = "Last name can only contain letters";
+    }
+
     const newErrors = {
-      firstName: firstName ? "" : "This field is required",
-      lastName: lastName ? "" : "This field is required",
+      firstName: firstNameError,
+      lastName: lastNameError,
       birthday: birthday ? "" : "This field is required",
-      gender: gender ? "" : "This field is required",
+      gender: gender ? "" : "Please select a gender",
       email: email ? "" : "This field is required",
       password: passwordError,
       passwordConfirmation: passwordConfirmation ? "" : "This field is required",
     };
     setErrors(newErrors);
 
-    if (Object.values(newErrors).some((error) => error !== "")) {
-      return false;
-    }
-    return true;
+    return !Object.values(newErrors).some((error) => error !== "");
+
   }
 
   const registerUser = async () => {
@@ -95,7 +110,7 @@ export function Register() {
         password,
         confirmPassword: passwordConfirmation,
       });
-
+      console.log('Registration validation successful', validateResponse.data)
       if (validateResponse.status === 200) {
 
         const registerResponse = await axios.post("/api/user/register", {
