@@ -44,30 +44,29 @@ ROUTER.post('/validate-registration', async (req, res) => {
 });
 
 ROUTER.post('/register', async (req, res) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    const SESSION = await mongoose.startSession();
+    SESSION.startTransaction();
 
     try {
         const USER_EXISTS = await doesUserExist(req.body.email);
         if (USER_EXISTS) {
-            await session.abortTransaction();
-            await session.endSession();
+            await SESSION.abortTransaction();
+            await SESSION.endSession();
             return res.status(400).json({ error: 'User already exists' });
         } else {
-            const hashedPassword = await hashPassword(req.body.password);
-            const newUser = new User({
+            const HASHED_PASSWORD = await hashPassword(req.body.password);
+            const NEW_USER = new User({
                 ...req.body,
-                password: hashedPassword
+                password: HASHED_PASSWORD
             });
-            await newUser.save({ session });
-            await session.commitTransaction();
-            await session.endSession();
+            await NEW_USER.save({ session: SESSION });
+            await SESSION.commitTransaction();
+            await SESSION.endSession();
             return res.status(200).json({ message: 'Success' });
         }
     } catch (error) {
-        console.error('Error in transaction', error);
-        await session.abortTransaction();
-        await session.endSession();
+        await SESSION.abortTransaction();
+        await SESSION.endSession();
         return res.status(500).json({ error: error.message });
     }
 });
