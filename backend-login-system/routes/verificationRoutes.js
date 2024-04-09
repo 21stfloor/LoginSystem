@@ -12,6 +12,12 @@ ROUTER.post('/create-token', async (req, res) => {
     SESSION.startTransaction();
 
     try {
+        const USER_EXISTS = await doesUserExist(EMAIL); // Pass session to the function
+        if (!USER_EXISTS) {
+            await SESSION.abortTransaction();
+            await SESSION.endSession();
+            return res.status(400).json({ error: 'User does not exist' });
+        }
         const TOKEN_EXISTS = await doesTokenExist(EMAIL); // Pass session to the function
         if (TOKEN_EXISTS) {
             await SESSION.abortTransaction();
