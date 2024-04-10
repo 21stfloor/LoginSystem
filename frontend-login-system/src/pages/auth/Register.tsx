@@ -33,7 +33,7 @@ function isAxiosError(error: unknown): error is AxiosError {
 export function Register() {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
-  const [birthday, setBirthday] = useState(new Date())
+  const [birthday, setBirthday] = useState<Date | null>(null);
   const [gender, setGender] = useState("Male")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -61,14 +61,15 @@ export function Register() {
       passwordError = "Passwords do not match";
     }
 
-    const nameRegex = /^[A-Za-z]+$/;
+    const nameRegex = /^[A-Za-z ]+$/;
     let firstNameError = "";
     let lastNameError = "";
+    let birthdayError = "";
 
     if (!firstName) {
       firstNameError = "This field is required";
     } else if (!firstName.match(nameRegex)) {
-      firstNameError = "First name can only contain letters";
+      firstNameError = "First name can only contain letters and spaces";
     }
 
     if (!lastName) {
@@ -77,10 +78,14 @@ export function Register() {
       lastNameError = "Last name can only contain letters";
     }
 
+    if (!birthday) {
+      birthdayError = "This field is required";
+    }
+
     const newErrors = {
       firstName: firstNameError,
       lastName: lastNameError,
-      birthday: birthday ? "" : "This field is required",
+      birthday: birthdayError,
       gender: gender ? "" : "Please select a gender",
       email: email ? "" : "This field is required",
       password: passwordError,
@@ -100,7 +105,7 @@ export function Register() {
     }
 
     try {
-      const birthdayString = birthday.toISOString().slice(0, 10);
+      const birthdayString = birthday ? birthday.toISOString().slice(0, 10): "";
       const validateResponse = await axios.post("/api/user/validate-registration", {
         firstName,
         lastName,
@@ -135,13 +140,17 @@ export function Register() {
     }
   }
 
+  const handleDateSelected = (date: Date) => {
+    setBirthday(date);
+    setErrors((prevErrors) => ({ ...prevErrors, birthday: ""}));
+  }
+
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault()
     setIsLoading(true)
     await registerUser()
     setIsLoading(false)
   }
-
 
 
   return (
@@ -189,7 +198,12 @@ export function Register() {
                 disabled={isLoading}
                 selected={birthday}
                 onChange={(date: Date) => setBirthday(date)}
+                onDateSelected={handleDateSelected}
+                className={classNames({ 'border-red-500': errors.birthday })}
               />
+              {errors.birthday && (
+                  <span className="text-red-500 text-sm">{errors.birthday}</span>
+              )}
               <div className="flex flex-row space-x-4">
                 <div className="flex flex-col space-y-1.5 w-full">
                   <Label htmlFor="gender">Gender</Label>

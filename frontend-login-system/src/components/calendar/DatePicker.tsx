@@ -22,6 +22,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {useState} from "react";
 
 const FormSchema = z.object({
   dob: z.date({
@@ -31,14 +32,19 @@ const FormSchema = z.object({
 
 interface DatePickerProps {
   disabled?: boolean;
-  selected?: Date; 
-  onChange?: (date: Date) => void; 
+  selected?: Date | null;
+  onChange?: (date: Date) => void;
+  onDateSelected?: (date: Date) => void;
+  className?: string;
 }
 
-export function DatePicker({ disabled }: DatePickerProps) {
+export function DatePicker({ disabled, className, onDateSelected }: DatePickerProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
+
+  const { clearErrors } = form;
+  const [isClicked, setIsClicked] = useState(false);
 
   return (
     <Form {...form}>
@@ -47,7 +53,7 @@ export function DatePicker({ disabled }: DatePickerProps) {
           control={form.control}
           name="dob"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
+            <FormItem className={`flex flex-col ${className}`}>
               <FormLabel>Date of birth</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
@@ -56,9 +62,10 @@ export function DatePicker({ disabled }: DatePickerProps) {
                     variant={"outline"}
                     className={cn(
                       "w-full pl-3 justify-start text-left font-normal",
-                      !field.value && "text-muted-foreground"
+                      !field.value && !isClicked && className
                     )}
                     disabled={disabled}
+                    onClick={() => setIsClicked(true)}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {field.value ? (
@@ -74,7 +81,14 @@ export function DatePicker({ disabled }: DatePickerProps) {
                   mode="single"
                   captionLayout="dropdown-buttons"
                   selected={field.value}
-                  onSelect={field.onChange}
+                  onSelect={(date) => {
+                    field.onChange(date);
+                    clearErrors("dob");
+                    setIsClicked(false);
+                    if (onDateSelected && date) { // Check that onDateSelected is not undefined
+                      onDateSelected(date);
+                    }
+                  }}
                   fromYear={1920}
                   toYear={new Date().getFullYear()}
                 />
