@@ -85,7 +85,7 @@ export function DatePicker({ disabled, className, onDateSelected }: DatePickerPr
                     field.onChange(date);
                     clearErrors("dob");
                     setIsClicked(false);
-                    if (onDateSelected && date) { // Check that onDateSelected is not undefined
+                    if (onDateSelected && date) {
                       onDateSelected(date);
                     }
                   }}

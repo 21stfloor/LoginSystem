@@ -94,7 +94,6 @@ export function Register() {
     setErrors(newErrors);
 
     return !Object.values(newErrors).some((error) => error !== "");
-
   }
 
   const registerUser = async () => {
@@ -152,7 +151,7 @@ export function Register() {
     setIsLoading(false)
   }
 
-
+  
   return (
     <div className="flex justify-center items-center space-x-0 sm:space-x-20 h-screen sm:h-auto">
       <img src={Image} alt="3DAuth" className="hidden sm:block w-full md:w-1/2 lg:w-1/3 xl:w-1/4"/>
