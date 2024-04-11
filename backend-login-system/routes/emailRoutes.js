@@ -1,6 +1,8 @@
 import express from 'express';
+import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 
+dotenv.config();
 const ROUTER = express.Router();
 const TRANSPORTER = nodemailer.createTransport({
     port: process.env.EMAIL_PORT,
@@ -42,8 +44,8 @@ ROUTER.post('/send', async (req, res) => {
     const MAIL_OPTIONS = {
         from: process.env.EMAIL_USER,
         to: email,
-        EMAIL_VERIFICATION_SUBJECT,
-        TEXT: EMAIL_CONTENT,
+        subject: EMAIL_VERIFICATION_SUBJECT,
+        text: EMAIL_CONTENT,
     }
 
     TRANSPORTER.sendMail(MAIL_OPTIONS, function (error, info) {
