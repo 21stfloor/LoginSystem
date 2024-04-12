@@ -1,7 +1,6 @@
 import commonPasswords from 'common-password-checker';//TODO: Look for more updated third-party dependency for future support
 import crypto from "crypto";
 import bcrypt from "bcrypt";
-import VerificationTokens from "../models/verificationTokenModel.js";
 
 const MINIMUM_PASSWORD_LENGTH = 8;
 const BYTES_NUMBER = 20;
@@ -55,13 +54,4 @@ function hashPassword(rawPassword){
   return bcrypt.hashSync(rawPassword, SALT_ROUNDS);
 }
 
-async function doesTokenExist(email) {
-  try {
-      const TOKEN = await VerificationTokens.findOne({ email });
-      return TOKEN != null;
-  } catch (err) {
-      throw new Error(err.message);
-  }
-}
-
-export { isPasswordValid, generateVerificationToken, hashPassword, doesTokenExist };
+export { isPasswordValid, generateVerificationToken, hashPassword };
