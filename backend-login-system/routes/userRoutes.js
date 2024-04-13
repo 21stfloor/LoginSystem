@@ -4,8 +4,17 @@ import { getRegistrationValidationRules } from '../controllers/validationControl
 import { doesUserExist } from '../controllers/userController.js';
 import User from '../models/userModel.js';
 import { hashPassword} from "../controllers/authController.js";
+import rateLimit from 'express-rate-limit';
 
 const ROUTER = express.Router();
+const MAX_RETRIES = 5;
+const RETRY_COOLDOWN = 20;
+const LIMITER = rateLimit({
+    windowMs: RETRY_COOLDOWN * 60 * 1000,
+    max: MAX_RETRIES,
+    message: 'Too many registration attempts, please try again later.'
+});
+  
 
 ROUTER.post('/validate-registration', async (req, res) => {
     const validationRules = getRegistrationValidationRules(req);
@@ -43,6 +52,7 @@ ROUTER.post('/validate-registration', async (req, res) => {
     }
 });
 
+ROUTER.post('/register', LIMITER);
 ROUTER.post('/register', async (req, res) => {
     const SESSION = await mongoose.startSession();
     SESSION.startTransaction();
