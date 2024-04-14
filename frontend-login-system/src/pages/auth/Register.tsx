@@ -25,6 +25,8 @@ import classNames from 'classnames'
 import { toast } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
 import { AxiosError } from "axios"
+import PasswordStrengthBar from 'react-password-strength-bar';
+
 
 function isAxiosError(error: unknown): error is AxiosError {
   return (error as AxiosError).isAxiosError !== undefined;
@@ -48,8 +50,7 @@ export function Register() {
     password: "",
     passwordConfirmation: "",
   });
-  
-  
+
 
   const validateFields = async () => {
     let passwordError = "";
@@ -150,8 +151,8 @@ export function Register() {
     await registerUser()
     setIsLoading(false)
   }
+ 
 
-  
   return (
     <div className="flex justify-center items-center space-x-0 sm:space-x-20 h-screen sm:h-auto">
       <img src={Image} alt="3DAuth" className="hidden sm:block w-full md:w-1/2 lg:w-1/3 xl:w-1/4"/>
@@ -248,6 +249,13 @@ export function Register() {
                   disabled={isLoading}
                   className={classNames({ 'border-red-500': errors.password })}
                 />
+                <PasswordStrengthBar
+                  password={password}
+                  shortScoreWord="Too short"
+                  scoreWords={['Weak', 'Okay', 'Good', 'Strong', 'Very Strong']}
+                  barColors={['#ccc', '#f00', '#f90', '#ff0', '#0f0']}
+                  />
+
                 {errors.password && (
                   <span className="text-red-500 text-sm">{errors.password}</span>
                 )}
@@ -282,3 +290,6 @@ export function Register() {
     </div>
   )
 }
+
+
+export default PasswordStrengthBar;
