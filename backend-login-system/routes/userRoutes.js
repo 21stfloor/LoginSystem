@@ -53,7 +53,7 @@ ROUTER.post('/register', async (req, res) => {
         const USER_EXISTS = await doesUserExist(req.body.email);
 
         if (USER_EXISTS) {
-            await SESSION.abortTransaction();d
+            await SESSION.abortTransaction();
             await SESSION.endSession();
             return res.status(400).json({ error: 'User already exists' });
         } else {
@@ -61,7 +61,7 @@ ROUTER.post('/register', async (req, res) => {
             if (TOKEN_EXISTS) {
                 await SESSION.abortTransaction();
                 await SESSION.endSession();
-                return res.status(400).json({ error: 'Token already exists' });
+                return res.status(400).json({ error: 'This email was already registered!' });
             }
 
             const HASHED_PASSWORD = await hashPassword(req.body.password);
