@@ -292,4 +292,3 @@ export function Register() {
 }
 
 
-export default PasswordStrengthBar;
