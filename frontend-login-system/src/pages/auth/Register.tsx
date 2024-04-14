@@ -25,6 +25,15 @@ import classNames from 'classnames'
 import { toast } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
 import { AxiosError } from "axios"
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader
+} from "@/components/ui/alertDialog";
+
 
 function isAxiosError(error: unknown): error is AxiosError {
   return (error as AxiosError).isAxiosError !== undefined;
@@ -48,8 +57,12 @@ export function Register() {
     password: "",
     passwordConfirmation: "",
   });
-  
-  
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [dialogDescription, setDialogDescription] = useState("");
+
+  const closeDialog = ()=>{
+    setDialogOpen(false);
+  }
 
   const validateFields = async () => {
     let passwordError = "";
@@ -134,6 +147,10 @@ export function Register() {
           if (responseData && responseData.errors && responseData.errors.password) {
             toast.error(responseData.errors.password);
           } 
+        }
+        if (error.response && error.response.status === 429) {
+          setDialogDescription("Too many attemps, try again later!");
+          setDialogOpen(true);
         }
       }
     }
@@ -279,6 +296,19 @@ export function Register() {
           </form>
         </CardContent>
       </Card>
+      <AlertDialog open={isDialogOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogDescription>
+            {dialogDescription}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={closeDialog}>Close</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
     </div>
   )
 }
