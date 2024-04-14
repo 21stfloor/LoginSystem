@@ -26,6 +26,7 @@ import { toast } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
 import { AxiosError } from "axios"
 
+
 function isAxiosError(error: unknown): error is AxiosError {
   return (error as AxiosError).isAxiosError !== undefined;
 }
@@ -54,9 +55,17 @@ export function Register() {
   const validateFields = async () => {
     let passwordError = "";
     if (!password) {
-    passwordError = "This field is required";
+      passwordError = "This field is required";
     } else if (password.length < 8) {
       passwordError = "Password must be at least 8 characters long";
+    } else if (!/[A-Z]/.test(password)) {
+      passwordError = "Password must contain at least one uppercase letter";
+    } else if (!/[a-z]/.test(password)) {
+      passwordError = "Password must contain at least one lowercase letter";
+    } else if (!/\d/.test(password)) {
+      passwordError = "Password must contain at least one number";
+    } else if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password)) {
+      passwordError = "Password must contain at least one special character";
     } else if (password !== passwordConfirmation) {
       passwordError = "Passwords do not match";
     }
@@ -151,134 +160,134 @@ export function Register() {
     setIsLoading(false)
   }
 
+    return (
+      <div className="flex justify-center items-center space-x-0 sm:space-x-20 h-screen sm:h-auto">
+        <img src={Image} alt="3DAuth" className="hidden sm:block w-full md:w-1/2 lg:w-1/3 xl:w-1/4"/>
+        <Card className="w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-[500px] mx-auto">
+          <CardHeader>
+            <CardTitle>Register</CardTitle>
+            <CardDescription>Create an account to get started</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit}>
+              <div className="grid w-full items-center gap-4">
+                <div className="flex flex-row space-x-4">
+                  <div className="flex flex-col space-y-1.5 w-full">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input 
+                      id="firstName"
+                      placeholder="Enter your first name"
+                      disabled={isLoading}
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className={classNames({ 'border-red-500': errors.firstName })}
+                    />
+                    {errors.firstName && (
+                      <span className="text-red-500 text-sm">{errors.firstName}</span>
+                    )}
+                  </div>
+                  <div className="flex flex-col space-y-1.5 w-full">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      id="lastName" 
+                      placeholder="Enter your last name"
+                      disabled={isLoading}
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className={classNames({ 'border-red-500': errors.lastName })}
+                    />
+                    {errors.lastName && (
+                      <span className="text-red-500 text-sm">{errors.lastName}</span>
+                    )}
+                  </div>
+                </div>
+                <DatePicker 
+                  disabled={isLoading}
+                  selected={birthday}
+                  onChange={(date: Date) => setBirthday(date)}
+                  onDateSelected={handleDateSelected}
+                  className={classNames({ 'border-red-500': errors.birthday })}
+                />
+                {errors.birthday && (
+                    <span className="text-red-500 text-sm">{errors.birthday}</span>
+                )}
+                <div className="flex flex-row space-x-4">
+                  <div className="flex flex-col space-y-1.5 w-full">
+                    <Label htmlFor="gender">Gender</Label>
+                    <Select 
+                      disabled={isLoading} 
+                      onValueChange={(value) => setGender(value)}
+                    >
+                      <SelectTrigger id="gender">
+                        <SelectValue placeholder="Male" />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {errors.gender && (
+                      <span className="text-red-500 text-sm">{errors.gender}</span>
+                    )}
+                  </div>
+                  <div className="flex flex-col space-y-1.5 w-full">
+                    <Label htmlFor="email">Email</Label>
+                    <Input 
+                      type="email"  
+                      placeholder="Enter your email"
+                      disabled={isLoading}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={classNames({ 'border-red-500': errors.email })}
+                    />
+                    {errors.email && (
+                      <span className="text-red-500 text-sm">{errors.email}</span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="password">Password</Label>
+                  <PasswordInput
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="password"
+                    disabled={isLoading}
+                    className={classNames({ 'border-red-500': errors.password })}
+                  />               
+                  {errors.password && (
+                    <span className="text-red-500 text-sm">{errors.password}</span>
+                  )}
+                </div>
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="passwordConfirmation">Confirm Password</Label>
+                  <PasswordInput
+                    id="passwordConfirmation"
+                    value={passwordConfirmation}
+                    onChange={(e) => setPasswordConfirmation(e.target.value)}
+                    autoComplete="password"
+                    disabled={isLoading}
+                    className={classNames({ 'border-red-500': errors.passwordConfirmation })}
+                  />
+                  {errors.passwordConfirmation && (
+                    <span className="text-red-500 text-sm">
+                      {errors.passwordConfirmation}
+                    </span>
+                  )}
+                </div>
+                <Button 
+                  type="submit" 
+                  disabled={isLoading}
+                >
+                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Create an account
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
   
-  return (
-    <div className="flex justify-center items-center space-x-0 sm:space-x-20 h-screen sm:h-auto">
-      <img src={Image} alt="3DAuth" className="hidden sm:block w-full md:w-1/2 lg:w-1/3 xl:w-1/4"/>
-      <Card className="w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-[500px] mx-auto">
-        <CardHeader>
-          <CardTitle>Register</CardTitle>
-          <CardDescription>Create an account to get started</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit}>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-row space-x-4">
-                <div className="flex flex-col space-y-1.5 w-full">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input 
-                    id="firstName"
-                    placeholder="Enter your first name"
-                    disabled={isLoading}
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className={classNames({ 'border-red-500': errors.firstName })}
-                  />
-                  {errors.firstName && (
-                    <span className="text-red-500 text-sm">{errors.firstName}</span>
-                  )}
-                </div>
-                <div className="flex flex-col space-y-1.5 w-full">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input
-                    id="lastName" 
-                    placeholder="Enter your last name"
-                    disabled={isLoading}
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    className={classNames({ 'border-red-500': errors.lastName })}
-                  />
-                  {errors.lastName && (
-                    <span className="text-red-500 text-sm">{errors.lastName}</span>
-                  )}
-                </div>
-              </div>
-              <DatePicker 
-                disabled={isLoading}
-                selected={birthday}
-                onChange={(date: Date) => setBirthday(date)}
-                onDateSelected={handleDateSelected}
-                className={classNames({ 'border-red-500': errors.birthday })}
-              />
-              {errors.birthday && (
-                  <span className="text-red-500 text-sm">{errors.birthday}</span>
-              )}
-              <div className="flex flex-row space-x-4">
-                <div className="flex flex-col space-y-1.5 w-full">
-                  <Label htmlFor="gender">Gender</Label>
-                  <Select 
-                    disabled={isLoading} 
-                    onValueChange={(value) => setGender(value)}
-                  >
-                    <SelectTrigger id="gender">
-                      <SelectValue placeholder="Male" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      <SelectItem value="Male">Male</SelectItem>
-                      <SelectItem value="Female">Female</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errors.gender && (
-                    <span className="text-red-500 text-sm">{errors.gender}</span>
-                  )}
-                </div>
-                <div className="flex flex-col space-y-1.5 w-full">
-                  <Label htmlFor="email">Email</Label>
-                  <Input 
-                    type="email"  
-                    placeholder="Enter your email"
-                    disabled={isLoading}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={classNames({ 'border-red-500': errors.email })}
-                  />
-                  {errors.email && (
-                    <span className="text-red-500 text-sm">{errors.email}</span>
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="password">Password</Label>
-                <PasswordInput
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete="password"
-                  disabled={isLoading}
-                  className={classNames({ 'border-red-500': errors.password })}
-                />
-                {errors.password && (
-                  <span className="text-red-500 text-sm">{errors.password}</span>
-                )}
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="passwordConfirmation">Confirm Password</Label>
-                <PasswordInput
-                  id="passwordConfirmation"
-                  value={passwordConfirmation}
-                  onChange={(e) => setPasswordConfirmation(e.target.value)}
-                  autoComplete="password"
-                  disabled={isLoading}
-                  className={classNames({ 'border-red-500': errors.passwordConfirmation })}
-                />
-                {errors.passwordConfirmation && (
-                  <span className="text-red-500 text-sm">
-                    {errors.passwordConfirmation}
-                  </span>
-                )}
-              </div>
-              <Button 
-                type="submit" 
-                disabled={isLoading}
-              >
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Create an account
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  )
-}
