@@ -1,5 +1,7 @@
+import crypto from "crypto";
 import VerificationToken from "../models/verificationTokenModel.js";
-import { generateVerificationToken } from "./authController.js";
+
+const BYTES_NUMBER = 20;
 
 async function doesTokenExist(email) {
     try {
@@ -10,20 +12,8 @@ async function doesTokenExist(email) {
     }
 }
 
-async function createToken(email) {
-    if (await doesTokenExist(email)) throw new Error('Token already exists');
-
-    try {
-        const TOKEN = generateVerificationToken();
-        const NEW_TOKEN = new VerificationToken({
-            _id: TOKEN,
-            email
-        });
-        await NEW_TOKEN.save();
-        return TOKEN;
-    } catch (err) {
-        throw new Error(err.message);
-    }
+function generateVerificationToken() {
+    return crypto.randomBytes(BYTES_NUMBER).toString('hex');
 }
 
-export { createToken };
+export { generateVerificationToken, doesTokenExist };

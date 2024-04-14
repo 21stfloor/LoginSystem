@@ -1,9 +1,7 @@
 import commonPasswords from 'common-password-checker';//TODO: Look for more updated third-party dependency for future support
-import crypto from "crypto";
 import bcrypt from "bcrypt";
 
 const MINIMUM_PASSWORD_LENGTH = 8;
-const BYTES_NUMBER = 20;
 const COMMON_SUBSTITUTIONS = ['4', '3', '1', '0', '5']; 
 const COMMON_DIGITS = ['123', '1234', '12345']; 
 const COMMON_SPECIAL_CHARACTERS = ['!', '@', '$', '&']; 
@@ -46,12 +44,8 @@ function isPasswordValid(password) {
   return true;
 }
 
-function generateVerificationToken() {
-  return crypto.randomBytes(BYTES_NUMBER).toString('hex');
-}
-
 function hashPassword(rawPassword){
   return bcrypt.hashSync(rawPassword, SALT_ROUNDS);
 }
 
-export { isPasswordValid, generateVerificationToken, hashPassword };
+export { isPasswordValid, hashPassword };

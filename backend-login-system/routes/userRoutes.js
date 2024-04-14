@@ -1,8 +1,10 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import User from '../models/userModel.js';
+import VerificationToken from '../models/verificationTokenModel.js';
 import { getRegistrationValidationRules } from '../controllers/validationController.js';
 import { doesUserExist } from '../controllers/userController.js';
-import User from '../models/userModel.js';
+import { doesTokenExist, generateVerificationToken } from '../controllers/verificationController.js';
 import { hashPassword} from "../controllers/authController.js";
 
 const ROUTER = express.Router();
@@ -49,17 +51,33 @@ ROUTER.post('/register', async (req, res) => {
 
     try {
         const USER_EXISTS = await doesUserExist(req.body.email);
+
         if (USER_EXISTS) {
-            await SESSION.abortTransaction();
+            await SESSION.abortTransaction();d
             await SESSION.endSession();
             return res.status(400).json({ error: 'User already exists' });
         } else {
+            const TOKEN_EXISTS = await doesTokenExist(req.body.email);
+            if (TOKEN_EXISTS) {
+                await SESSION.abortTransaction();
+                await SESSION.endSession();
+                return res.status(400).json({ error: 'Token already exists' });
+            }
+
             const HASHED_PASSWORD = await hashPassword(req.body.password);
             const NEW_USER = new User({
                 ...req.body,
                 password: HASHED_PASSWORD
             });
             await NEW_USER.save({ session: SESSION });
+
+            const VERIFICATION_TOKEN = generateVerificationToken();
+            const NEW_TOKEN = new VerificationToken({
+                _id: VERIFICATION_TOKEN,
+                email: req.body.email
+            });
+            await NEW_TOKEN.save({ session: SESSION });
+
             await SESSION.commitTransaction();
             await SESSION.endSession();
             return res.status(200).json({ message: 'Success' });
