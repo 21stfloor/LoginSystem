@@ -22,6 +22,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {useState} from "react";
 
 const FormSchema = z.object({
   dob: z.date({
@@ -31,58 +32,73 @@ const FormSchema = z.object({
 
 interface DatePickerProps {
   disabled?: boolean;
+  selected?: Date | null;
+  onChange?: (date: Date) => void;
+  onDateSelected?: (date: Date) => void;
+  className?: string;
 }
 
-export function DatePicker({ disabled }: DatePickerProps) {
+export function DatePicker({ disabled, className, onDateSelected }: DatePickerProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
 
+  const {clearErrors} = form;
+  const [isClicked, setIsClicked] = useState(false);
+
   return (
     <Form {...form}>
-      <form className="space-y-8">
+      <div className="space-y-8">
         <FormField
           control={form.control}
           name="dob"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
+          render={({field}) => (
+            <FormItem className={`flex flex-col ${className}`}>
               <FormLabel>Date of birth</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full pl-3 justify-start text-left font-normal",
-                      !field.value && "text-muted-foreground"
-                    )}
-                    disabled={disabled}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {field.value ? (
-                      format(field.value, "PPP")
-                    ) : (
-                      <span>Pick a date</span>
-                    )}
-                  </Button>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full pl-3 justify-start text-left font-normal",
+                        !field.value && !isClicked && className
+                      )}
+                      disabled={disabled}
+                      onClick={() => setIsClicked(true)}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4"/>
+                      {field.value ? (
+                        format(field.value, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  captionLayout="dropdown-buttons"
-                  selected={field.value}
-                  onSelect={field.onChange}
-                  fromYear={1920}
-                  toYear={new Date().getFullYear()}
-                />
+                  <Calendar
+                    mode="single"
+                    captionLayout="dropdown-buttons"
+                    selected={field.value}
+                    onSelect={(date) => {
+                      field.onChange(date);
+                      clearErrors("dob");
+                      setIsClicked(false);
+                      if (onDateSelected && date) {
+                        onDateSelected(date);
+                      }
+                    }}
+                    fromYear={1920}
+                    toYear={new Date().getFullYear()}
+                  />
                 </PopoverContent>
               </Popover>
-              <FormMessage />
+              <FormMessage/>
             </FormItem>
           )}
         />
-      </form>
+      </div>
     </Form>
   )
 }
