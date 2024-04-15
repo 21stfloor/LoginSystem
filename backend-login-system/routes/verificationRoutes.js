@@ -1,5 +1,5 @@
 import express from 'express';
-import VerificationTokenModel from '../models/verificationTokenModel.js';
+import VerificationToken from '../models/verificationTokenModel.js';
 
 const ROUTER = express.Router();
 
@@ -10,7 +10,7 @@ ROUTER.get('/verify/:id', async (req, res) => {
     }
 
     try {
-        const DELETED_TOKEN = await VerificationTokenModel.findOneAndDelete({ id: VERIFICATION_ID });
+        const DELETED_TOKEN = await VerificationToken.findOneAndDelete({ _id: VERIFICATION_ID });
 
         if (!DELETED_TOKEN) {
             return res.status(404).send('Verification token not found');
