@@ -49,15 +49,13 @@ export function Register() {
     password: "",
     passwordConfirmation: "",
   });
-  
-  
 
-  const validateFields = async () => {
+  const validatePassword = (password: string, passwordConfirmation: string) => {
     let passwordError = "";
     if (!password) {
       passwordError = "This field is required";
     } else if (password.length < 8) {
-      passwordError = "Password must be at least 8 characters long";
+      passwordError = "Password must be at least 8 characters long";                  
     } else if (!/[A-Z]/.test(password)) {
       passwordError = "Password must contain at least one uppercase letter";
     } else if (!/[a-z]/.test(password)) {
@@ -69,7 +67,12 @@ export function Register() {
     } else if (password !== passwordConfirmation) {
       passwordError = "Passwords do not match";
     }
+    return passwordError;
+  }
 
+
+  const validateFields = async () => { 
+    const passwordError = validatePassword(password, passwordConfirmation);
     const nameRegex = /^[A-Za-z ]+$/;
     let firstNameError = "";
     let lastNameError = "";
@@ -250,8 +253,12 @@ export function Register() {
                   <Label htmlFor="password">Password</Label>
                   <PasswordInput
                     id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={password}  
+                    onChange={(e) => {
+                      setPassword(e.target.value) 
+                      const passwordError = validatePassword(e.target.value, passwordConfirmation);
+                      setErrors((prevErrors) => ({ ...prevErrors, password: passwordError }));
+                    }}
                     autoComplete="password"
                     disabled={isLoading}
                     className={classNames({ 'border-red-500': errors.password })}
