@@ -6,7 +6,7 @@ import emailRoutes from './emailRoutes.js';
 const ROUTER = express.Router();
 
 ROUTER.use(json());
-ROUTER.use('/user', userRoutes); 
+ROUTER.use('/user', userRoutes);
 ROUTER.use('/verification', verificationRoutes);
 ROUTER.use('/email', emailRoutes);
 

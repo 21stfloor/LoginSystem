@@ -13,4 +13,4 @@ const VERIFICATION_TOKEN_SCHEMA = new Schema({
     }
 });
 
-export default model('VerificationTokens', VERIFICATION_TOKEN_SCHEMA, 'VerificationTokens');
+export default model('VerificationToken', VERIFICATION_TOKEN_SCHEMA, 'VerificationTokens');

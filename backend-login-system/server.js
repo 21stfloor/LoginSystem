@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import json from 'express';
 import dotenv from 'dotenv';
 import index from './routes/index.js';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -19,6 +20,8 @@ DB.on('error', (error) => console.error(error));
 DB.once('open', () => console.log('Connected to Database'));
 
 APP.use(json());
+
+APP.use(cors());
 
 APP.use('/', index);
 
