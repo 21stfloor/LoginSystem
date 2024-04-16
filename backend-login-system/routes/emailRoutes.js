@@ -50,7 +50,7 @@ ROUTER.post('/send', async (req, res) => {
 
     TRANSPORTER.sendMail(MAIL_OPTIONS, function (error, info) {
         if (error) {
-            res.status(500).send(error);
+            res.status(500).json({error: error});
         }
         else {
             res.status(200).send('Email was sent successfully');

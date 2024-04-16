@@ -116,7 +116,7 @@ export function Register() {
         confirmPassword: passwordConfirmation,
       });
       if (validateResponse.status === 200) {
-        await axios.post("/api/user/register", {
+        let registrationResult = await axios.post("/api/user/register", {
           firstName,
           lastName,
           birthday: birthdayString,
@@ -124,7 +124,28 @@ export function Register() {
           email,
           password,
         });
-        toast.success("User registered successfully")
+
+        if(registrationResult.status == 200){
+          toast.success("User registered successfully")
+          let responseData = registrationResult.data;
+          if (responseData && responseData.hasOwnProperty('token')) {            
+            let sendEmailResponse = await axios.post("/api/email/send", {
+              email: email,
+              verificationLink: `localhost:3000/verification/${responseData.token}`,//TODO replace the domain
+              fullName: `${firstName} ${lastName}`              
+            });
+
+            if(sendEmailResponse.status == 200){
+              toast.success("Please check your email to activate your account");
+            }
+            else{
+              toast.error(sendEmailResponse.data.error);
+            }
+          } else {
+            toast.error(`Invalid verification token, please re-send the verification manually.`);
+          }
+        }
+
       } else {
         throw new Error("Registration validation failed");
       }
