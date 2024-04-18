@@ -40,36 +40,41 @@ export function Register() {
   const [password, setPassword] = useState("")
   const [passwordConfirmation, setPasswordConfirmation] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [errors, setErrors] = useState({
-    firstName: "",  
-    lastName: "",
-    birthday: "",
-    gender: "",
-    email: "",
-    password: "",
-    passwordConfirmation: "",
-  });
+ const [errors, setErrors] = useState({
+  firstName: "",  
+  lastName: "",
+  birthday: "",
+  gender: "",
+  email: "",
+  password: [] as string[],
+  passwordConfirmation: "",
+});
 
   const validatePassword = (password: string, passwordConfirmation: string) => {
-    let passwordError = "";
+  const passwordErrors = [];
     if (!password) {
-      passwordError = "This field is required";
-    } else if (password.length < 8) {
-      passwordError = "Password must be at least 8 characters long";                  
-    } else if (!/[A-Z]/.test(password)) {
-      passwordError = "Password must contain at least one uppercase letter";
-    } else if (!/[a-z]/.test(password)) {
-      passwordError = "Password must contain at least one lowercase letter";
-    } else if (!/\d/.test(password)) {
-      passwordError = "Password must contain at least one number";
-    } else if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password)) {
-      passwordError = "Password must contain at least one special character";
-    } else if (password !== passwordConfirmation) {
-      passwordError = "Passwords do not match";
+      passwordErrors.push("This field is required.");
+    } 
+    if (password && password.length < 8) {
+      passwordErrors.push("Password must be at least 8 characters long.");                  
+    } 
+    if (password && !/[A-Z]/.test(password)) {
+      passwordErrors.push("Password must contain at least one uppercase letter.");
+    } 
+    if (password && !/[a-z]/.test(password)) {
+      passwordErrors.push("Password must contain at least one lowercase letter.");
+    } 
+    if (password && !/\d/.test(password)) {
+      passwordErrors.push("Password must contain at least one number.");
+    } 
+    if (password && !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password)) {
+      passwordErrors.push("Password must contain at least one special character.");
+    } 
+    if (password && password !== passwordConfirmation) {
+      passwordErrors.push("Passwords do not match.");
     }
-    return passwordError;
+    return passwordErrors;
   }
-
 
   const validateFields = async () => { 
     const passwordError = validatePassword(password, passwordConfirmation);
@@ -250,23 +255,21 @@ export function Register() {
                   </div>
                 </div>
                 <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="password">Password</Label>
-                  <PasswordInput
-                    id="password"
-                    value={password}  
-                    onChange={(e) => {
-                      setPassword(e.target.value) 
-                      const passwordError = validatePassword(e.target.value, passwordConfirmation);
-                      setErrors((prevErrors) => ({ ...prevErrors, password: passwordError }));
-                    }}
-                    autoComplete="password"
-                    disabled={isLoading}
-                    className={classNames({ 'border-red-500': errors.password })}
-                  />               
-                  {errors.password && (
-                    <span className="text-red-500 text-sm">{errors.password}</span>
-                  )}
-                </div>
+  <Label htmlFor="password">Password</Label>
+  <PasswordInput
+    id="password"
+    value={password}  
+    onChange={(e) => {
+      setPassword(e.target.value);
+      const passwordErrors = validatePassword(e.target.value, passwordConfirmation);
+      setErrors((prevErrors) => ({ ...prevErrors, password: passwordErrors }));
+    }}
+    autoComplete="password"
+    disabled={isLoading}
+    className={classNames({ 'border-red-500': errors.password })}
+  />               
+  {errors.password && errors.password.map((error, index) => <li key={index} style={{ color: 'red' }}>{error}</li>)}
+</div>
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="passwordConfirmation">Confirm Password</Label>
                   <PasswordInput
