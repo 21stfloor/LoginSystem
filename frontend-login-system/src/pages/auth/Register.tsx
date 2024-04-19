@@ -255,21 +255,23 @@ export function Register() {
                   </div>
                 </div>
                 <div className="flex flex-col space-y-1.5">
-  <Label htmlFor="password">Password</Label>
-  <PasswordInput
-    id="password"
-    value={password}  
-    onChange={(e) => {
-      setPassword(e.target.value);
-      const passwordErrors = validatePassword(e.target.value, passwordConfirmation);
-      setErrors((prevErrors) => ({ ...prevErrors, password: passwordErrors }));
-    }}
-    autoComplete="password"
-    disabled={isLoading}
-    className={classNames({ 'border-red-500': errors.password })}
-  />               
-  {errors.password && errors.password.map((error, index) => <li key={index} style={{ color: 'red' }}>{error}</li>)}
-</div>
+                <Label htmlFor="password">Password</Label>
+                <PasswordInput
+                id="password"
+                value={password}  
+                onChange={(e) => {
+                setPassword(e.target.value);
+                const passwordErrors = validatePassword(e.target.value, passwordConfirmation);
+                setErrors((prevErrors) => ({ ...prevErrors, password: passwordErrors }));
+                }}
+                autoComplete="password"
+                disabled={isLoading}
+                className={classNames({ 'border-black': errors.password })}
+                />
+                {errors.password && errors.password.map((error, index) => 
+                <li key={index} style={{ color: 'red', fontSize: '13px', listStyleType: 'none' }}>{error}</li>
+                )}
+                </div>
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="passwordConfirmation">Confirm Password</Label>
                   <PasswordInput
