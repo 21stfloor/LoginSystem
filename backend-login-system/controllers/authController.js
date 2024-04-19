@@ -2,9 +2,6 @@ import commonPasswords from 'common-password-checker';//TODO: Look for more upda
 import bcrypt from "bcrypt";
 
 const MINIMUM_PASSWORD_LENGTH = 8;
-const COMMON_SUBSTITUTIONS = ['4', '3', '1', '0', '5']; 
-const COMMON_DIGITS = ['123', '1234', '12345']; 
-const COMMON_SPECIAL_CHARACTERS = ['!', '@', '$', '&']; 
 const SPECIAL_CHARACTERS = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 const SALT_ROUNDS = 10;
 
@@ -30,14 +27,6 @@ function isPasswordValid(password) {
   }
 
   if (password.toUpperCase() === password || password.toLowerCase() === password) {
-    return false;
-  }
-
-  if (
-    COMMON_SUBSTITUTIONS.some(substitution => password.includes(substitution)) ||
-    COMMON_DIGITS.some(digit => password.includes(digit)) ||
-    COMMON_SPECIAL_CHARACTERS.some(char => password.includes(char))
-  ) {
     return false;
   }
   
