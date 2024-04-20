@@ -47,10 +47,10 @@ export function Register() {
   gender: "",
   email: "",
   password: [] as string[],
-  passwordConfirmation: "",
+  passwordConfirmation: [] as string[],
 });
 
-  const validatePassword = (password: string, passwordConfirmation: string) => {
+  const validatePassword = (password: string) => {
   const passwordErrors = [];
     if (!password) {
       passwordErrors.push("This field is required.");
@@ -70,14 +70,12 @@ export function Register() {
     if (password && !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password)) {
       passwordErrors.push("Password must contain at least one special character.");
     } 
-    if (password && password !== passwordConfirmation) {
-      passwordErrors.push("Passwords do not match.");
-    }
+
     return passwordErrors;
   }
 
   const validateFields = async () => { 
-    const passwordError = validatePassword(password, passwordConfirmation);
+    const passwordError = validatePassword(password);
     const nameRegex = /^[A-Za-z ]+$/;
     let firstNameError = "";
     let lastNameError = "";
@@ -100,14 +98,14 @@ export function Register() {
     }
 
     const newErrors = {
-      firstName: firstNameError,
-      lastName: lastNameError,
-      birthday: birthdayError,
-      gender: gender ? "" : "Please select a gender",
-      email: email ? "" : "This field is required",
-      password: passwordError,
-      passwordConfirmation: passwordConfirmation ? "" : "This field is required",
-    };
+  firstName: firstNameError,
+  lastName: lastNameError,
+  birthday: birthdayError,
+  gender: gender ? "" : "Please select a gender",
+  email: email ? "" : "This field is required",
+  password: passwordError,
+  passwordConfirmation: password !== passwordConfirmation ? ["Passwords do not match"] : [],
+};
     setErrors(newErrors);
 
     return !Object.values(newErrors).some((error) => error !== "");
@@ -257,37 +255,40 @@ export function Register() {
                 <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">Password</Label>
                 <PasswordInput
-                id="password"
-                value={password}  
-                onChange={(e) => {
-                setPassword(e.target.value);
-                const passwordErrors = validatePassword(e.target.value, passwordConfirmation);
-                setErrors((prevErrors) => ({ ...prevErrors, password: passwordErrors }));
-                }}
-                autoComplete="password"
-                disabled={isLoading}
-                className={classNames({ 'border-black': errors.password })}
-                />
-                {errors.password && errors.password.map((error, index) => 
-                <li key={index} style={{ color: 'red', fontSize: '13px', listStyleType: 'none' }}>{error}</li>
-                )}
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="passwordConfirmation">Confirm Password</Label>
-                  <PasswordInput
-                    id="passwordConfirmation"
-                    value={passwordConfirmation}
-                    onChange={(e) => setPasswordConfirmation(e.target.value)}
-                    autoComplete="password"
-                    disabled={isLoading}
-                    className={classNames({ 'border-red-500': errors.passwordConfirmation })}
-                  />
-                  {errors.passwordConfirmation && (
-                    <span className="text-red-500 text-sm">
-                      {errors.passwordConfirmation}
-                    </span>
-                  )}
-                </div>
+  id="password"
+  value={password}  
+  onChange={(e) => {
+    setPassword(e.target.value);
+    const passwordErrors = validatePassword(e.target.value);
+    const passwordConfirmationErrors = e.target.value !== passwordConfirmation ? ['Passwords do not match'] : [];
+    setErrors((prevErrors) => ({ ...prevErrors, password: passwordErrors, passwordConfirmation: passwordConfirmationErrors }));
+  }}
+  autoComplete="password"
+  disabled={isLoading}
+  className={classNames({ 'border-black': errors.password })}
+/>
+{errors.password && errors.password.map((error, index) => 
+  <li key={index} style={{ color: 'red', fontSize: '13px', listStyleType: 'none' }}>{error}</li>
+)}
+</div>
+<div className="flex flex-col space-y-1.5">
+  <Label htmlFor="passwordConfirmation">Confirm Password</Label>
+  <PasswordInput
+    id="passwordConfirmation"
+    value={passwordConfirmation}
+    onChange={(e) => {
+      setPasswordConfirmation(e.target.value);
+      const passwordConfirmationErrors = password !== e.target.value ? ['Passwords do not match'] : [];
+      setErrors((prevErrors) => ({ ...prevErrors, passwordConfirmation: passwordConfirmationErrors }));
+    }}
+    autoComplete="password"
+    disabled={isLoading}
+    className={classNames({ 'border-black': errors.passwordConfirmation })}
+  />
+  {errors.passwordConfirmation && errors.passwordConfirmation.map((error, index) => 
+    <li key={index} style={{ color: 'red', fontSize: '13px', listStyleType: 'none' }}>{error}</li>
+  )}
+</div>
                 <Button 
                   type="submit" 
                   disabled={isLoading}
