@@ -98,14 +98,14 @@ export function Register() {
     }
 
     const newErrors = {
-  firstName: firstNameError,
-  lastName: lastNameError,
-  birthday: birthdayError,
-  gender: gender ? "" : "Please select a gender",
-  email: email ? "" : "This field is required",
-  password: passwordError,
-  passwordConfirmation: password !== passwordConfirmation ? ["Passwords do not match"] : [],
-};
+      firstName: firstNameError,
+      lastName: lastNameError,
+      birthday: birthdayError,
+      gender: gender ? "" : "Please select a gender",
+      email: email ? "" : "This field is required",
+      password: passwordError,
+      passwordConfirmation: password !== passwordConfirmation ? ["Passwords do not match"] : [],
+    };
     setErrors(newErrors);
 
     return !Object.values(newErrors).some((error) => error !== "");
