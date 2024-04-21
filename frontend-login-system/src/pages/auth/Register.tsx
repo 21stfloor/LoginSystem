@@ -25,6 +25,8 @@ import classNames from 'classnames'
 import { toast } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
 import { AxiosError } from "axios"
+import PasswordStrengthBar from 'react-password-strength-bar';
+
 
 
 function isAxiosError(error: unknown): error is AxiosError {
@@ -165,6 +167,7 @@ export function Register() {
     await registerUser()
     setIsLoading(false)
   }
+ 
 
     return (
       <div className="flex justify-center items-center space-x-0 sm:space-x-20 h-screen sm:h-auto">
@@ -206,7 +209,6 @@ export function Register() {
                       <span className="text-red-500 text-sm">{errors.lastName}</span>
                     )}
                   </div>
-                </div>
                 <DatePicker 
                   disabled={isLoading}
                   selected={birthday}
@@ -269,7 +271,12 @@ export function Register() {
                 />
                 {errors.password && errors.password.map((error, index) => 
                 <li key={index} style={{ color: 'red', fontSize: '13px', listStyleType: 'none' }}>{error}</li>
-                )}
+                <PasswordStrengthBar
+                  password={password}
+                  shortScoreWord="Too short"
+                  scoreWords={['Weak', 'Okay', 'Good', 'Strong', 'Very Strong']}
+                  barColors={['#ccc', '#f00', '#f90', '#ff0', '#0f0']}
+                  />
                 </div>
                 <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="passwordConfirmation">Confirm Password</Label>
@@ -303,4 +310,3 @@ export function Register() {
       </div>
     )
   }
-  
