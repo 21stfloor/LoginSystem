@@ -42,41 +42,41 @@ export function Register() {
   const [password, setPassword] = useState("")
   const [passwordConfirmation, setPasswordConfirmation] = useState("")
   const [isLoading, setIsLoading] = useState(false)
- const [errors, setErrors] = useState({
-  firstName: "",  
-  lastName: "",
-  birthday: "",
-  gender: "",
-  email: "",
-  password: [] as string[],
-  passwordConfirmation: [] as string[],
-});
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    birthday: "",
+    gender: "",
+    email: "",
+    password: [] as string[],
+    passwordConfirmation: [] as string[],
+  });
 
   const validatePassword = (password: string) => {
-  const passwordErrors = [];
+    const passwordErrors = [];
     if (!password) {
       passwordErrors.push("This field is required.");
-    } 
+    }
     if (password && password.length < 8) {
-      passwordErrors.push("Password must be at least 8 characters long.");                  
-    } 
+      passwordErrors.push("Password must be at least 8 characters long.");
+    }
     if (password && !/[A-Z]/.test(password)) {
       passwordErrors.push("Password must contain at least one uppercase letter.");
-    } 
+    }
     if (password && !/[a-z]/.test(password)) {
       passwordErrors.push("Password must contain at least one lowercase letter.");
-    } 
+    }
     if (password && !/\d/.test(password)) {
       passwordErrors.push("Password must contain at least one number.");
-    } 
+    }
     if (password && !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password)) {
       passwordErrors.push("Password must contain at least one special character.");
-    } 
+    }
 
     return passwordErrors;
   }
 
-  const validateFields = async () => { 
+  const validateFields = async () => {
     const passwordError = validatePassword(password);
     const nameRegex = /^[A-Za-z ]+$/;
     let firstNameError = "";
@@ -121,7 +121,7 @@ export function Register() {
     }
 
     try {
-      const birthdayString = birthday ? birthday.toISOString().slice(0, 10): "";
+      const birthdayString = birthday ? birthday.toISOString().slice(0, 10) : "";
       const validateResponse = await axios.post("/api/user/validate-registration", {
         firstName,
         lastName,
@@ -150,7 +150,7 @@ export function Register() {
           const responseData = error.response.data as { errors: { password: string } };
           if (responseData && responseData.errors && responseData.errors.password) {
             toast.error(responseData.errors.password);
-          } 
+          }
         }
       }
     }
@@ -158,7 +158,7 @@ export function Register() {
 
   const handleDateSelected = (date: Date) => {
     setBirthday(date);
-    setErrors((prevErrors) => ({ ...prevErrors, birthday: ""}));
+    setErrors((prevErrors) => ({ ...prevErrors, birthday: "" }));
   }
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -167,146 +167,147 @@ export function Register() {
     await registerUser()
     setIsLoading(false)
   }
- 
 
-    return (
-      <div className="flex justify-center items-center space-x-0 sm:space-x-20 h-screen sm:h-auto">
-        <img src={Image} alt="3DAuth" className="hidden sm:block w-full md:w-1/2 lg:w-1/3 xl:w-1/4"/>
-        <Card className="w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-[500px] mx-auto">
-          <CardHeader>
-            <CardTitle>Register</CardTitle>
-            <CardDescription>Create an account to get started</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit}>
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-row space-x-4">
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input 
-                      id="firstName"
-                      placeholder="Enter your first name"
-                      disabled={isLoading}
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className={classNames({ 'border-red-500': errors.firstName })}
-                    />
-                    {errors.firstName && (
-                      <span className="text-red-500 text-sm">{errors.firstName}</span>
-                    )}
-                  </div>
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input
-                      id="lastName" 
-                      placeholder="Enter your last name"
-                      disabled={isLoading}
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      className={classNames({ 'border-red-500': errors.lastName })}
-                    />
-                    {errors.lastName && (
-                      <span className="text-red-500 text-sm">{errors.lastName}</span>
-                    )}
-                  </div>
-                <DatePicker 
-                  disabled={isLoading}
-                  selected={birthday}
-                  onChange={(date: Date) => setBirthday(date)}
-                  onDateSelected={handleDateSelected}
-                  className={classNames({ 'border-red-500': errors.birthday })}
-                />
-                {errors.birthday && (
-                    <span className="text-red-500 text-sm">{errors.birthday}</span>
-                )}
-                <div className="flex flex-row space-x-4">
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <Label htmlFor="gender">Gender</Label>
-                    <Select 
-                      disabled={isLoading} 
-                      onValueChange={(value) => setGender(value)}
-                    >
-                      <SelectTrigger id="gender">
-                        <SelectValue placeholder="Male" />
-                      </SelectTrigger>
-                      <SelectContent position="popper">
-                        <SelectItem value="Male">Male</SelectItem>
-                        <SelectItem value="Female">Female</SelectItem>
-                        <SelectItem value="Other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {errors.gender && (
-                      <span className="text-red-500 text-sm">{errors.gender}</span>
-                    )}
-                  </div>
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <Label htmlFor="email">Email</Label>
-                    <Input 
-                      type="email"  
-                      placeholder="Enter your email"
-                      disabled={isLoading}
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className={classNames({ 'border-red-500': errors.email })}
-                    />
-                    {errors.email && (
-                      <span className="text-red-500 text-sm">{errors.email}</span>
-                    )}
-                  </div>
+
+  return (
+    <div className="flex justify-center items-center space-x-0 sm:space-x-20 h-screen sm:h-auto">
+      <img src={Image} alt="3DAuth" className="hidden sm:block w-full md:w-1/2 lg:w-1/3 xl:w-1/4" />
+      <Card className="w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-[500px] mx-auto">
+        <CardHeader>
+          <CardTitle>Register</CardTitle>
+          <CardDescription>Create an account to get started</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit}>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-row space-x-4">
+                <div className="flex flex-col space-y-1.5 w-full">
+                  <Label htmlFor="firstName">First Name</Label>
+                  <Input
+                    id="firstName"
+                    placeholder="Enter your first name"
+                    disabled={isLoading}
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className={classNames({ 'border-red-500': errors.firstName })}
+                  />
+                  {errors.firstName && (
+                    <span className="text-red-500 text-sm">{errors.firstName}</span>
+                  )}
                 </div>
-                <div className="flex flex-col space-y-1.5">
+                <div className="flex flex-col space-y-1.5 w-full">
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <Input
+                    id="lastName"
+                    placeholder="Enter your last name"
+                    disabled={isLoading}
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className={classNames({ 'border-red-500': errors.lastName })}
+                  />
+                  {errors.lastName && (
+                    <span className="text-red-500 text-sm">{errors.lastName}</span>
+                  )}
+                </div>
+              </div>
+              <DatePicker
+                disabled={isLoading}
+                selected={birthday}
+                onChange={(date: Date) => setBirthday(date)}
+                onDateSelected={handleDateSelected}
+                className={classNames({ 'border-red-500': errors.birthday })}
+              />
+              {errors.birthday && (
+                <span className="text-red-500 text-sm">{errors.birthday}</span>
+              )}
+              <div className="flex flex-row space-x-4">
+                <div className="flex flex-col space-y-1.5 w-full">
+                  <Label htmlFor="gender">Gender</Label>
+                  <Select
+                    disabled={isLoading}
+                    onValueChange={(value) => setGender(value)}
+                  >
+                    <SelectTrigger id="gender">
+                      <SelectValue placeholder="Male" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="Male">Male</SelectItem>
+                      <SelectItem value="Female">Female</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.gender && (
+                    <span className="text-red-500 text-sm">{errors.gender}</span>
+                  )}
+                </div>
+                <div className="flex flex-col space-y-1.5 w-full">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    disabled={isLoading}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={classNames({ 'border-red-500': errors.email })}
+                  />
+                  {errors.email && (
+                    <span className="text-red-500 text-sm">{errors.email}</span>
+                  )}
+                </div>
+              </div>
+              <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">Password</Label>
                 <PasswordInput
-                id="password"
-                value={password}  
-                onChange={(e) => {
-                setPassword(e.target.value);
-                const passwordErrors = validatePassword(e.target.value);
-                const passwordConfirmationErrors = e.target.value !== passwordConfirmation ? ['Passwords do not match'] : [];
-                setErrors((prevErrors) => ({ ...prevErrors, password: passwordErrors, passwordConfirmation: passwordConfirmationErrors }));
-                }}
-                autoComplete="password"
-                disabled={isLoading}
-                className={classNames({ 'border-black': errors.password })}
+                  id="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    const passwordErrors = validatePassword(e.target.value);
+                    const passwordConfirmationErrors = e.target.value !== passwordConfirmation ? ['Passwords do not match'] : [];
+                    setErrors((prevErrors) => ({ ...prevErrors, password: passwordErrors, passwordConfirmation: passwordConfirmationErrors }));
+                  }}
+                  autoComplete="password"
+                  disabled={isLoading}
+                  className={classNames({ 'border-black': errors.password })}
                 />
-                {errors.password && errors.password.map((error, index) => 
-                <li key={index} style={{ color: 'red', fontSize: '13px', listStyleType: 'none' }}>{error}</li>
+                {errors.password && errors.password.map((error, index) =>
+                  <li key={index} style={{ color: 'red', fontSize: '13px', listStyleType: 'none' }}>{error}</li>)}
                 <PasswordStrengthBar
                   password={password}
                   shortScoreWord="Too short"
                   scoreWords={['Weak', 'Okay', 'Good', 'Strong', 'Very Strong']}
                   barColors={['#ccc', '#f00', '#f90', '#ff0', '#0f0']}
-                  />
-                </div>
-                <div className="flex flex-col space-y-1.5">
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="passwordConfirmation">Confirm Password</Label>
                 <PasswordInput
-                id="passwordConfirmation"
-                value={passwordConfirmation}
-                onChange={(e) => {
-                setPasswordConfirmation(e.target.value);
-                const passwordConfirmationErrors = password !== e.target.value ? ['Passwords do not match'] : [];
-                setErrors((prevErrors) => ({ ...prevErrors, passwordConfirmation: passwordConfirmationErrors }));
-                }}
-                autoComplete="password"
-                disabled={isLoading}
-                className={classNames({ 'border-black': errors.passwordConfirmation })}
-                />
-                {errors.passwordConfirmation && errors.passwordConfirmation.map((error, index) => 
-                <li key={index} style={{ color: 'red', fontSize: '13px', listStyleType: 'none' }}>{error}</li>
-                )}
-                </div>
-                <Button 
-                  type="submit" 
+                  id="passwordConfirmation"
+                  value={passwordConfirmation}
+                  onChange={(e) => {
+                    setPasswordConfirmation(e.target.value);
+                    const passwordConfirmationErrors = password !== e.target.value ? ['Passwords do not match'] : [];
+                    setErrors((prevErrors) => ({ ...prevErrors, passwordConfirmation: passwordConfirmationErrors }));
+                  }}
+                  autoComplete="password"
                   disabled={isLoading}
-                >
-                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Create an account
-                </Button>
+                  className={classNames({ 'border-black': errors.passwordConfirmation })}
+                />
+                {errors.passwordConfirmation && errors.passwordConfirmation.map((error, index) =>
+                  <li key={index} style={{ color: 'red', fontSize: '13px', listStyleType: 'none' }}>{error}</li>
+                )}
               </div>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
+              <Button
+                type="submit"
+                disabled={isLoading}
+              >
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Create an account
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
