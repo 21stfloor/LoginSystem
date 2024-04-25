@@ -5,6 +5,12 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+const environment: string = (process.env.REACT_APP_SOME_CONFIGURATION as string);
+const domain = 
+  environment === 'production'
+    ? process.env.REACT_APP_API_URL_PROD as string
+    : process.env.REACT_APP_API_URL_LOCAL as string;
+    
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
@@ -16,7 +22,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: process.env.REACT_APP_API_URL_LOCAL,
+        target: domain,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
