@@ -109,8 +109,10 @@ export function Register() {
       passwordConfirmation: password !== passwordConfirmation ? ["Passwords do not match"] : [],
     };
     setErrors(newErrors);
-
-    return !Object.values(newErrors).some((error) => error !== "");
+    if (passwordError.length > 0) {
+      return false;
+    }
+    return !Object.values(newErrors).some((error) => error !== "" && !Array.isArray(error));
   }
 
   const registerUser = async () => {
