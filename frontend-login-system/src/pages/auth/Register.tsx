@@ -146,10 +146,10 @@ export function Register() {
         if(registrationResult.status == 200){
           toast.success("User registered successfully")
           let responseData = registrationResult.data;
-          if (responseData && responseData.hasOwnProperty('token')) {            
-            let sendEmailResponse = await axios.post("/api/email/send", {
+          if (responseData && responseData.hasOwnProperty('token')) { 
+            let sendEmailResponse = await apiClient.post("/email/send", {
               email: email,
-              verificationLink: `localhost:3000/verification/${responseData.token}`,//TODO replace the domain
+              verificationLink: `${apiClient.defaults.baseURL}/verification/${responseData.token._id}`,
               fullName: `${firstName} ${lastName}`              
             });
 
