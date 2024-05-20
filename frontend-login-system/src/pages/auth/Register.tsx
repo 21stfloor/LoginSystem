@@ -20,12 +20,12 @@ import {
 } from "@/components/ui/select"
 import { useState } from "react"
 import Image from '../../assets/3DAuth.png'
-import axios from 'axios'
 import classNames from 'classnames'
 import { toast } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
 import { AxiosError } from "axios"
 import PasswordStrengthBar from 'react-password-strength-bar';
+import apiClient from "@/api"
 
 
 
@@ -124,7 +124,7 @@ export function Register() {
 
     try {
       const birthdayString = birthday ? birthday.toISOString().slice(0, 10) : "";
-      const validateResponse = await axios.post("/api/user/validate-registration", {
+      const validateResponse = await apiClient.post("/user/validate-registration", {
         firstName,
         lastName,
         birthday: birthdayString,
@@ -134,7 +134,7 @@ export function Register() {
         confirmPassword: passwordConfirmation,
       });
       if (validateResponse.status === 200) {
-        await axios.post("/api/user/register", {
+        await apiClient.post("/user/register", {
           firstName,
           lastName,
           birthday: birthdayString,
