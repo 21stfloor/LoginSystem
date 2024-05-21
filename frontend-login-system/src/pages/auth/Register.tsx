@@ -134,7 +134,7 @@ export function Register() {
         confirmPassword: passwordConfirmation,
       });
       if (validateResponse.status === 200) {
-        let registrationResult = await apiClient.post("/user/register", {
+        const registrationResult = await apiClient.post("/user/register", {
           firstName,
           lastName,
           birthday: birthdayString,
@@ -145,9 +145,9 @@ export function Register() {
 
         if(registrationResult.status == 200){
           toast.success("User registered successfully")
-          let responseData = registrationResult.data;
-          if (responseData && responseData.hasOwnProperty('token')) { 
-            let sendEmailResponse = await apiClient.post("/email/send", {
+          const responseData = registrationResult.data;
+          if (responseData && Object.prototype.hasOwnProperty.call(responseData, 'token')) {
+            const sendEmailResponse = await apiClient.post("/email/send", {
               email: email,
               verificationLink: `${apiClient.defaults.baseURL}/verification/${responseData.token._id}`,
               fullName: `${firstName} ${lastName}`              
