@@ -80,7 +80,7 @@ ROUTER.post('/register', async (req, res) => {
 
             await SESSION.commitTransaction();
             await SESSION.endSession();
-            return res.status(200).json({ message: 'Success' });
+            return res.status(200).json({ message: 'Success', token: NEW_TOKEN });
         }
     } catch (error) {
         await SESSION.abortTransaction();

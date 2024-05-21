@@ -134,7 +134,7 @@ export function Register() {
         confirmPassword: passwordConfirmation,
       });
       if (validateResponse.status === 200) {
-        await apiClient.post("/user/register", {
+        const registrationResult = await apiClient.post("/user/register", {
           firstName,
           lastName,
           birthday: birthdayString,
@@ -142,7 +142,28 @@ export function Register() {
           email,
           password,
         });
-        toast.success("User registered successfully")
+
+        if(registrationResult.status == 200){
+          toast.success("User registered successfully")
+          const responseData = registrationResult.data;
+          if (responseData && Object.prototype.hasOwnProperty.call(responseData, 'token')) {
+            const sendEmailResponse = await apiClient.post("/email/send", {
+              email: email,
+              verificationLink: `${apiClient.defaults.baseURL}/verification/${responseData.token._id}`,
+              fullName: `${firstName} ${lastName}`              
+            });
+
+            if(sendEmailResponse.status == 200){
+              toast.success("Please check your email to activate your account");
+            }
+            else{
+              toast.error(sendEmailResponse.data.error);
+            }
+          } else {
+            toast.error(`Invalid verification token, please re-send the verification manually.`);
+          }
+        }
+
       } else {
         throw new Error("Registration validation failed");
       }
